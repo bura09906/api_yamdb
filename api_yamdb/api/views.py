@@ -1,13 +1,13 @@
 from rest_framework import viewsets
 from reviews.models import Comment, Title, User, Review, Genre, Category, Title
-from .serializers import (
+from api.serializers import (
     CommentSerializer, ReviewSerializer, GenreSerializer,
-    CategorySerializer, TitleSerializer
+    CategorySerializer
 )
 from django.shortcuts import get_object_or_404
 import secrets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from django.db.models import Avg
 from users.models import ConfirmationCode
 from django.conf import settings
 from django.core.mail import send_mail
@@ -21,6 +21,14 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly
 from .serializers import (GetTokenSerializer, ProfileSerializer,
                           RegistrationSerializer, UserSerializer)
+
+
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import viewsets
+from .serializers import GenreSerializer, CategorySerializer, TitleWriteSerializer, TitleReadSerializer
+from reviews.models import Title, Genre, Category
 
 
 class RegistationApiView(views.APIView):
@@ -125,19 +133,37 @@ class UserViewSet(viewsets.ModelViewSet):
             )
 
 
-class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
-    serializer_class = TitleSerializer
-
-
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    filter_backends = (SearchFilter,)
+    search_fields = ('slug',)
+    lookup_field = 'slug'
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    queryset = Genre.objects.all()
+    filter_backends = (SearchFilter,)
+    search_fields = ('slug',)
+    lookup_field = 'slug'
+
+
+class TitleViewSet(viewsets.ModelViewSet):
+    queryset = Title.objects.all()
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category', 'genre', 'name', 'year')
+    pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TitleReadSerializer
+        return TitleWriteSerializer
+
+    def get_queryset(self):
+        return Title.objects.all().annotate(
+            _average_rating=Avg('rating__score')
+        )
 
 
 class CommentViewSet(viewsets.ModelViewSet):
