@@ -1,5 +1,9 @@
 from django.contrib import admin
+<<<<<<< HEAD
 from django.urls import path, include
+=======
+from django.urls import include, path
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
 from django.views.generic import TemplateView
 
 urlpatterns = [

@@ -1,6 +1,15 @@
 import os
+<<<<<<< HEAD
 from pathlib import Path
 from datetime import timedelta
+=======
+from datetime import timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,8 +32,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+<<<<<<< HEAD
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
+=======
+    'api.apps.ApiConfig',  # Регистрация приложение api
+    'reviews.apps.ReviewsConfig',  # Регистрация приложение reviews
+    'users.apps.UsersConfig',  # Регистрация приложение users
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
 ]
 
 MIDDLEWARE = [
@@ -106,6 +121,15 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
+<<<<<<< HEAD
+=======
+# Путь к переопределённой модели пользователя
+
+AUTH_USER_MODEL = 'users.CustomUser'
+
+# Настройки rest_framework(аутентицикация)
+
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -114,10 +138,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
 }
 
+<<<<<<< HEAD
 
 SIMPLE_JWT = {
     # Устанавливаем срок жизни токена
@@ -125,10 +154,26 @@ SIMPLE_JWT = {
    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+=======
+# Настройки JWT
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# Настройки email-бэкенда
+
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+<<<<<<< HEAD
 LENGTH_CONFIRMATION_CODE = 10
+=======
+
+LENGTH_CONFIRMATION_CODE = 10  # Длина проверочного кода
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127

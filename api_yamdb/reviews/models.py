@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.db import models
 from django.db.models import Avg
 from django.core.validators import validate_slug
@@ -57,3 +58,8 @@ class Comment(models.Model):
         verbose_name = 'комментарий'
         verbose_name_plural = 'Комментарии'
         ordering = ['pub_date']
+=======
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+>>>>>>> 06fa757d5ac21d97808d4410f450044f38d1e127
