@@ -21,16 +21,16 @@ class Title(models.Model):
         through='GenreTitle'
     )
     category = models.ForeignKey(
-        Category, on_delete=models.DO_NOTHING,
+        Category, on_delete=models.SET_NULL,
         verbose_name='Категория', related_name='title',
-        unique=False
+        null=True
     )
     description = models.CharField('Описание', max_length=200, blank=True, null=True)
 
 
 class GenreTitle(models.Model):
-    genre = models.ForeignKey(Genre, on_delete=models.DO_NOTHING)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
+    genre = models.ForeignKey(Genre, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f'{self.genre} {self.title}'
