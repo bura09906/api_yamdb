@@ -106,14 +106,14 @@ class UserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         if request.method == 'GET':
             serializer = UserSerializer(request.user)
-            return Response(serializer.data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         elif request.method == 'PATCH':
             serializer = ProfileSerializer(
                 request.user, data=request.data, partial=True
             )
             if serializer.is_valid():
                 serializer.save()
-                return Response(serializer.data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(
                 serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
