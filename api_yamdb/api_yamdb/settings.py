@@ -1,10 +1,10 @@
 import os
-from datetime import timedelta
 from pathlib import Path
-
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,8 +27,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'api.apps.ApiConfig',
+    'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',  # Регистрация приложение api
     'users.apps.UsersConfig',  # Регистрация приложение users
+
 ]
 
 MIDDLEWARE = [
@@ -116,6 +119,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 # Настройки rest_framework(аутентицикация)
 
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -124,10 +128,18 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    
+
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 5,
 }
+
+
+SIMPLE_JWT = {
+    # Устанавливаем срок жизни токена
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+   'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
 
 # Настройки JWT
 
@@ -137,6 +149,7 @@ SIMPLE_JWT = {
 }
 
 # Настройки email-бэкенда
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.ru'
