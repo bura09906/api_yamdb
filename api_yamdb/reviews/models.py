@@ -1,6 +1,5 @@
 from django.db import models
-from django.db.models import Avg
-from django.core.validators import validate_slug
+from titles.models import Title
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 User = get_user_model()

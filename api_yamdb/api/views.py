@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from reviews.models import Comment, Review
+from titles.models import Title
 from api.serializers import (
     CommentSerializer, ReviewSerializer
 )
