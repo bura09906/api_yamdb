@@ -1,6 +1,6 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-from reviews.models import Comment, Review
+from reviews.models import Comment, Review, User
 from rest_framework import serializers
 from rest_framework import serializers
 from users.models import ConfirmationCode
