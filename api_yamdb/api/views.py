@@ -1,16 +1,8 @@
-from rest_framework import viewsets
-from reviews.models import Comment, Review
-from titles.models import Title
-from api.serializers import (
-    CommentSerializer, ReviewSerializer
-)
-from django.shortcuts import get_object_or_404
-from django.db.models import Avg
-from .permissions import IsAuthorOrReadOnly
 import secrets
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from rest_framework import filters, status, views, viewsets
 from rest_framework.decorators import action
@@ -18,11 +10,14 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+from reviews.models import Comment, Review, User
+from titles.models import Title
 from users.models import ConfirmationCode
 
-from .permissions import ForAdminOrSurepUser
-from .serializers import (GetTokenSerializer, ProfileSerializer,
-                          RegistrationSerializer, UserSerializer)
+from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly
+from .serializers import (CommentSerializer, GetTokenSerializer,
+                          ProfileSerializer, RegistrationSerializer,
+                          ReviewSerializer, UserSerializer)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
