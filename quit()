@@ -1,0 +1,19 @@
+[33m59dc52b[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/title[m[33m)[m HEAD@{0}: checkout: moving from develop to feature/title
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{1}: reset: moving to HEAD@{11}
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{2}: reset: moving to HEAD@{10}
+[33me8504ff[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{3}: reset: moving to HEAD@{12}
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{4}: checkout: moving from feature/title to develop
+[33m59dc52b[m[33m ([m[1;36mHEAD -> [m[1;32mfeature/title[m[33m)[m HEAD@{5}: commit: URL change
+[33m885530f[m HEAD@{6}: commit: Add models into inpor_data command
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{7}: checkout: moving from develop to feature/title
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{8}: reset: moving to HEAD@{0}
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{9}: checkout: moving from feature/title to develop
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{10}: checkout: moving from develop to feature/title
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{11}: merge feature/title: Fast-forward
+[33me8504ff[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{12}: checkout: moving from feature/title to develop
+[33m261c3ea[m[33m ([m[1;32mdevelop[m[33m)[m HEAD@{13}: commit: Add management command for import data from csv files
+[33m0281f5e[m HEAD@{14}: commit: Postman approves all models
+[33m433cc42[m HEAD@{15}: commit: UNIQUE problem
+[33me8504ff[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{16}: checkout: moving from develop to feature/title
+[33me8504ff[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{17}: checkout: moving from master to develop
+[33me8504ff[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m HEAD@{18}: clone: from github.com:bura09906/api_yamdb.git

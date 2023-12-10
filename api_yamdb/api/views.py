@@ -11,13 +11,33 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Comment, Review, User
-from titles.models import Title
+from titles.models import Title, Genre, Category
 from users.models import ConfirmationCode
 
 from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly
 from .serializers import (CommentSerializer, GetTokenSerializer,
                           ProfileSerializer, RegistrationSerializer,
-                          ReviewSerializer, UserSerializer)
+                          ReviewSerializer, UserSerializer,
+                         GenreSerializer, CategorySerializer,
+                          TitleWriteSerializer, TitleReadSerializer)
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    filter_backends = (SearchFilter,)
+    search_fields = ('slug',)
+    lookup_field = 'slug'
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    serializer_class = GenreSerializer
+    queryset = Genre.objects.all()
+    filter_backends = (SearchFilter,)
+    search_fields = ('slug',)
+    lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -25,6 +45,14 @@ class TitleViewSet(viewsets.ModelViewSet):
                 .annotate(rating=Avg("reviews__score")).all()
                 .order_by("name")
                 )
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('category', 'genre', 'name', 'year')
+    pagination_class = PageNumberPagination
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return TitleReadSerializer
+        return TitleWriteSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):

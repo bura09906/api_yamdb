@@ -28,10 +28,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api.apps.ApiConfig',
+    'django_filters',
+    'titles',
     'reviews.apps.ReviewsConfig',
     'api.apps.ApiConfig',  # Регистрация приложение api
     'users.apps.UsersConfig',  # Регистрация приложение users
+
 
 ]
 
@@ -113,6 +115,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
 
 # Путь к переопределённой модели пользователя
 
