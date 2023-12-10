@@ -28,7 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'api.apps.ApiConfig',  # Регистрация приложение api
-    'reviews.apps.ReviewsConfig',  # Регистрация приложение reviews
     'users.apps.UsersConfig',  # Регистрация приложение users
 ]
 
