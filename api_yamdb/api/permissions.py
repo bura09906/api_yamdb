@@ -21,3 +21,11 @@ class ForAdminOrSurepUser(permissions.BasePermission):
         return request.user.is_authenticated and (
             request.user.role == 'admin' or request.user.is_superuser
         )
+
+
+class IsAdminOrRead(permissions.BasePermission):
+
+    def has_permission(self, request, view):
+        if request.method == 'GET':
+            return True
+        return request.user.is_authenticated and request.user.role == 'admin'

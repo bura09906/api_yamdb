@@ -14,7 +14,7 @@ from reviews.models import Comment, Review, User
 from titles.models import Title, Genre, Category
 from users.models import ConfirmationCode
 
-from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly
+from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly, IsAdminOrRead
 from .serializers import (CommentSerializer, GetTokenSerializer,
                           ProfileSerializer, RegistrationSerializer,
                           ReviewSerializer, UserSerializer,
@@ -25,19 +25,29 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    serializer_class = CategorySerializer
     queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = (IsAdminOrRead,)
+    http_method_names = ['get', 'post', 'delete',]
     filter_backends = (SearchFilter,)
-    search_fields = ('slug',)
+    search_fields = ('name',)
     lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    serializer_class = GenreSerializer
     queryset = Genre.objects.all()
+    serializer_class = GenreSerializer
+    permission_classes = (IsAdminOrRead,)
+    http_method_names = ['get', 'post','delete',]
     filter_backends = (SearchFilter,)
-    search_fields = ('slug',)
+    search_fields = ('name',)
     lookup_field = 'slug'
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -45,6 +55,8 @@ class TitleViewSet(viewsets.ModelViewSet):
                 .annotate(rating=Avg("reviews__score")).all()
                 .order_by("name")
                 )
+    permission_classes = (IsAdminOrRead,)
+    http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category', 'genre', 'name', 'year')
     pagination_class = PageNumberPagination
