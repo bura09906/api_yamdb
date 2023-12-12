@@ -1,9 +1,8 @@
 from django.forms import ValidationError
 from rest_framework import serializers
-
 from reviews.models import Comment, Review, User
+from titles.models import Category, Genre, Title
 from users.models import ConfirmationCode
-from titles.models import Title, Genre, Category
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -34,7 +33,8 @@ class TitleReadSerializer(serializers.ModelSerializer):
     rating = serializers.FloatField(read_only=True)
 
     class Meta:
-        fields = ('id', 'name', 'year', 'description', 'genre', 'category', 'rating')
+        fields = ('id', 'name', 'year', 'description',
+                  'genre', 'category', 'rating')
         model = Title
 
 

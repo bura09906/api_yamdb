@@ -1,23 +1,28 @@
-from django.db import models
 from django.core.validators import validate_slug
+from django.db import models
 
 from .validators import validate_year
 
+
 class Genre(models.Model):
     name = models.CharField('Название', max_length=256)
-    slug = models.SlugField('Идентификатор', unique=True, max_length=50, validators=[validate_slug])
+    slug = models.SlugField(
+        'Идентификатор', unique=True, max_length=50, validators=[validate_slug]
+    )
 
 
 class Category(models.Model):
     name = models.CharField('Название', max_length=256)
-    slug = models.SlugField('Идентификатор', unique=True, max_length=50, validators=[validate_slug])
+    slug = models.SlugField(
+        'Идентификатор', unique=True, max_length=50, validators=[validate_slug]
+    )
 
 
 class Title(models.Model):
-    name = models.CharField('Название', max_length = 256)
+    name = models.CharField('Название', max_length=256)
     year = models.PositiveSmallIntegerField('Год', validators=[validate_year])
     genre = models.ManyToManyField(
-        Genre,verbose_name='Жанр',
+        Genre, verbose_name='Жанр',
         through='GenreTitle'
     )
     category = models.ForeignKey(
@@ -25,7 +30,9 @@ class Title(models.Model):
         verbose_name='Категория', related_name='title',
         null=True
     )
-    description = models.CharField('Описание', max_length=200, blank=True, null=True)
+    description = models.CharField(
+        'Описание', max_length=200, blank=True, null=True
+    )
 
 
 class GenreTitle(models.Model):

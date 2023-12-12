@@ -4,28 +4,29 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, status, views, viewsets
 from rest_framework.decorators import action
+from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Comment, Review, User
-from titles.models import Title, Genre, Category
+from titles.models import Category, Genre, Title
 from users.models import ConfirmationCode
 
-from .permissions import ForAdminOrSurepUser, IsAuthorOrReadOnly, IsAdminOrRead
-from .serializers import (CommentSerializer, GetTokenSerializer,
+from .filters import TitleFilter
+from .permissions import ForAdminOrSurepUser, IsAdminOrRead, IsAuthorOrReadOnly
+from .serializers import (CategorySerializer, CommentSerializer,
+                          GenreSerializer, GetTokenSerializer,
                           ProfileSerializer, RegistrationSerializer,
-                          ReviewSerializer, UserSerializer,
-                         GenreSerializer, CategorySerializer,
-                          TitleWriteSerializer, TitleReadSerializer)
-from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
+                          ReviewSerializer, TitleReadSerializer,
+                          TitleWriteSerializer, UserSerializer)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrRead,)
     http_method_names = ['get', 'post', 'delete',]
@@ -38,10 +39,10 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class GenreViewSet(viewsets.ModelViewSet):
-    queryset = Genre.objects.all()
+    queryset = Genre.objects.all().order_by('name')
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrRead,)
-    http_method_names = ['get', 'post','delete',]
+    http_method_names = ['get', 'post', 'delete',]
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -58,7 +59,8 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrRead,)
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category', 'genre', 'name', 'year')
+    filterset_fields = ('category__slug', 'genre__slug', 'name', 'year')
+    filterset_class = TitleFilter
     pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
