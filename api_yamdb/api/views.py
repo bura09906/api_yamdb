@@ -29,7 +29,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrRead,)
-    http_method_names = ['get', 'post', 'delete',]
+    http_method_names = ['get', 'post', 'delete']
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -42,7 +42,7 @@ class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all().order_by('name')
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrRead,)
-    http_method_names = ['get', 'post', 'delete',]
+    http_method_names = ['get', 'post', 'delete']
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
