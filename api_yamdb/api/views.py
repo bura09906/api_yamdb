@@ -58,7 +58,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdminOrRead,)
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('category', 'genre', 'name', 'year')
+    filterset_fields = ('category', 'genre__slug', 'name', 'year')
     pagination_class = PageNumberPagination
 
     def get_serializer_class(self):
