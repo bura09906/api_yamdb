@@ -7,8 +7,12 @@ from titles.models import Category, Genre, GenreTitle, Title
 
 User = get_user_model()
 
+
 class Command(BaseCommand):
-    help = 'Imports data from a CSV file into all models. WARNING old data will be erased!'
+    help = (
+        'Imports data from a CSV file into all models.'
+        'WARNING old data will be erased!'
+    )
 
     def handle(self, *args, **options):
         self.import_data()
@@ -84,12 +88,13 @@ class Command(BaseCommand):
                 )
 
         Comment.objects.all().delete()
-        with open('static/data/review.csv', encoding='utf8') as csvfile:
+        with open('static/data/comments.csv', encoding='utf8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
                 Comment.objects.create(
                     id=row['id'],
-                    review=Review.objects.get(row['review_id']),
+                    review=Review.objects.get(id=row['review_id']),
                     text=row['text'],
+                    author=User.objects.get(id=row['author']),
                     pub_date=row['pub_date']
                 )
