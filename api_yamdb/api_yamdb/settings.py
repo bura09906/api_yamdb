@@ -119,7 +119,7 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 # Путь к переопределённой модели пользователя
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.UserProfile'
 
 # Настройки rest_framework(аутентицикация)
 
@@ -136,13 +136,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 
     'PAGE_SIZE': 5,
-}
-
-
-SIMPLE_JWT = {
-    # Устанавливаем срок жизни токена
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 
@@ -163,4 +156,8 @@ EMAIL_USE_SSL = True
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 
-LENGTH_CONFIRMATION_CODE = 10  # Длина проверочного кода
+
+LENGTH_NAME_FIELDS = 256
+LENGTH_SLUG_FIELDS = 50
+LENGTH_USERNAME_FIELDS = 150
+LENGTH_EMAIL_FIELDS = 254
