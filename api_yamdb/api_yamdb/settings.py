@@ -119,7 +119,7 @@ STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
 
 # Путь к переопределённой модели пользователя
 
-AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.UserProfile'
 
 # Настройки rest_framework(аутентицикация)
 
