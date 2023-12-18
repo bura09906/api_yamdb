@@ -1,12 +1,12 @@
-from django.forms import ValidationError
-from rest_framework import serializers
-from reviews.models import Comment, Review, User
-from titles.models import Category, Genre, Title
 from django.contrib.auth.tokens import default_token_generator
 from django.core.validators import RegexValidator
-from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.forms import ValidationError
+from django.shortcuts import get_object_or_404
+from rest_framework import serializers
 
+from reviews.models import Comment, Review, User
+from titles.models import Category, Genre, Title
 from users.validators import validate_username
 
 
@@ -98,17 +98,22 @@ class RegistrationSerializer(serializers.Serializer):
     """Сериализатор для представления регистрации пользователя"""
     username = serializers.CharField(max_length=150,
                                      validators=(
-                                         [RegexValidator(regex=r"^[\w.@+-]+\Z")]
+                                         [RegexValidator(
+                                             regex=r"^[\w.@+-]+\Z"
+                                         )]
                                      ))
     email = serializers.EmailField(max_length=254)
 
     class Meta:
         fields = ('username', 'email')
 
-    
     def validate(self, data):
-        if User.objects.filter(Q(email=data['email']) | Q(username=data['username'])).exists():
-            if User.objects.filter(email=data['email'], username=data['username']).exists():
+        if User.objects.filter(
+            Q(email=data['email']) | Q(username=data['username'])
+        ).exists():
+            if User.objects.filter(
+                email=data['email'], username=data['username']
+            ).exists():
                 return data
             raise serializers.ValidationError(
                 'Пользователь с указанным email или username уже существует'
@@ -118,9 +123,11 @@ class RegistrationSerializer(serializers.Serializer):
     def validate_username(self, value):
         if not validate_username(value):
             return value
-    
+
     def create(self, validated_data):
-        user, status = User.objects.get_or_create(username=validated_data['username'], email=validated_data['email'])
+        user, status = User.objects.get_or_create(
+            username=validated_data['username'], email=validated_data['email']
+        )
         return user
 
 
@@ -131,14 +138,18 @@ class GetTokenSerializer(serializers.Serializer):
 
     def validate(self, data):
         user = get_object_or_404(User, username=data['username'])
-        if not default_token_generator.check_token(user, data['confirmation_code']):
+        if not default_token_generator.check_token(
+            user, data['confirmation_code']
+        ):
             raise serializers.ValidationError(
                 'Недействительный проверочный код'
             )
         return data
-    
+
     def get_registered_user(self):
-        user = get_object_or_404(User, username=self.validated_data['username'])
+        user = get_object_or_404(
+            User, username=self.validated_data['username']
+        )
         return user
 
 

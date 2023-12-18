@@ -1,52 +1,50 @@
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.tokens import default_token_generator
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, status, views, viewsets
+from rest_framework import filters, mixins, status, views, viewsets
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from reviews.models import Comment, Review, User
 from titles.models import Category, Genre, Title
-
 from .filters import TitleFilter
 from .permissions import ForAdminOrSurepUser, IsAdminOrRead, IsAuthorOrReadOnly
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, GetTokenSerializer,
-                          RegistrationSerializer,
-                          ReviewSerializer, TitleReadSerializer,
-                          TitleWriteSerializer, UserSerializer)
+                          RegistrationSerializer, ReviewSerializer,
+                          TitleReadSerializer, TitleWriteSerializer,
+                          UserSerializer)
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(
+    mixins.ListModelMixin, mixins.CreateModelMixin,
+    mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
     permission_classes = (IsAdminOrRead,)
-    http_method_names = ['get', 'post', 'delete']
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
 
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(
+    mixins.ListModelMixin, mixins.CreateModelMixin,
+    mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     queryset = Genre.objects.all().order_by('name')
     serializer_class = GenreSerializer
     permission_classes = (IsAdminOrRead,)
-    http_method_names = ['get', 'post', 'delete']
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
-
-    def retrieve(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -104,11 +102,11 @@ class RegistationApiView(views.APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
-            serializer = RegistrationSerializer(data=request.data)
-            if serializer.is_valid(raise_exception=True):
-                user = serializer.save()
-                self.send_confirmation_code(user)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            user = serializer.save()
+            self.send_confirmation_code(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
     def send_confirmation_code(self, user):
         confirmation_code = default_token_generator.make_token(user)
@@ -132,7 +130,6 @@ class GetTokenApiView(views.APIView):
             return Response(
                 {'token': str(token.access_token)}, status=status.HTTP_200_OK
             )
-
 
 
 class UserViewSet(viewsets.ModelViewSet):

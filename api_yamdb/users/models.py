@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.validators import UnicodeUsernameValidator
+
 from .validators import validate_username
 
 
@@ -19,9 +21,10 @@ class UserProfile(AbstractUser):
 
     username = models.CharField(
         _('username'),
-        max_length=150,
+        max_length=settings.LENGTH_USERNAME_FIELDS,
         unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_('Required. 150 characters or fewer.'
+                    'Letters, digits and @/./+/-/_ only.'),
         validators=[username_validator, validate_username],
         error_messages={
             'unique': _("A user with that username already exists."),
@@ -29,9 +32,9 @@ class UserProfile(AbstractUser):
     )
     email = models.EmailField(
         _('email address'),
-        max_length=254,
+        max_length=settings.LENGTH_EMAIL_FIELDS,
         unique=True,
-        help_text= 'Поле email обязательно для регистрации'
+        help_text='Поле email обязательно для регистрации'
     )
     bio = models.TextField(
         'Биография',
@@ -42,7 +45,8 @@ class UserProfile(AbstractUser):
         'Роль',
         default='user',
         choices=CHOICES,
-        help_text='Роль пользователя. Допустимые значения: user, admin, moderator'
+        help_text=('Роль пользователя. Допустимые'
+                   'значения: user, admin, moderator')
     )
 
     @property
