@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsAuthorOrReadOnly(permissions.BasePermission):
+class ForReviewAndComment(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return (
@@ -17,7 +17,7 @@ class IsAuthorOrReadOnly(permissions.BasePermission):
         )
 
 
-class ForAdminOrSurepUser(permissions.BasePermission):
+class ForUserProfile(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return request.user.is_authenticated and (
@@ -25,7 +25,7 @@ class ForAdminOrSurepUser(permissions.BasePermission):
         )
 
 
-class IsAdminOrRead(permissions.BasePermission):
+class ForGenreAndCategoryAndTitle(permissions.BasePermission):
 
     def has_permission(self, request, view):
         return (

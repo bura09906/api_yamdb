@@ -1,10 +1,9 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from .validators import validate_username
+from .validators import validate_username, username_validator
 
 
 class UserProfile(AbstractUser):
@@ -16,8 +15,6 @@ class UserProfile(AbstractUser):
         (MODERATOR, 'модератор'),
         (ADMIN, 'админ'),
     )
-
-    username_validator = UnicodeUsernameValidator()
 
     username = models.CharField(
         _('username'),
@@ -51,8 +48,8 @@ class UserProfile(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.role == self.ADMIN
+        return self.role == self.ADMIN or self.is_superuser
 
     @property
     def is_moderator(self):
-        return self.role == self.MODERATOR
+        return self.role == self.MODERATOR or self.is_staff

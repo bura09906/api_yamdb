@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 def validate_username(value):
@@ -6,3 +7,6 @@ def validate_username(value):
         raise ValidationError(
             'Имя пользователя me недопустимо'
         )
+
+
+username_validator = UnicodeUsernameValidator()
