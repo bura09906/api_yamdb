@@ -44,11 +44,9 @@ class Command(BaseCommand):
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     if 'category' in row:
-                        category_id = row['category']
-                        row['category'] = Category.objects.get(id=category_id)
+                        row['category_id'] = row.pop('category')
                     if 'author' in row:
-                        author_id = row['author']
-                        row['author'] = User.objects.get(id=author_id)
+                        row['author_id'] = row.pop('author')
                     objects_to_create.append(model(**row))
             model.objects.bulk_create(objects_to_create, ignore_conflicts=True)
             self.stdout.write(self.style.SUCCESS('Data imported successfully'))
