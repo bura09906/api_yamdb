@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -28,8 +29,14 @@ class Review(BaseReviewComment):
     )
     score = models.PositiveSmallIntegerField(
         validators=[
-            MinValueValidator(1, message='Минимальная оценка - 1'),
-            MaxValueValidator(10, message='Максимальная оценка -10'),
+            MinValueValidator(
+                settings.MIN_VALUE_SCORE_REVIEW,
+                message='Минимальная оценка - 1'
+            ),
+            MaxValueValidator(
+                settings.MAX_VALUE_SCORE_REVIEW,
+                message='Максимальная оценка -10'
+            ),
         ],
     )
 

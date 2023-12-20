@@ -15,7 +15,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Comment, Review, User
 from titles.models import Category, Genre, Title
 from .filters import TitleFilter
-from .permissions import ForAdminOrSurepUser, IsAdminOrRead, IsAuthorOrReadOnly
+from .permissions import (ForUserProfile, ForGenreAndCategoryAndTitle,
+                          ForReviewAndComment)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, GetTokenSerializer,
                           RegistrationSerializer, ReviewSerializer,
@@ -29,7 +30,7 @@ class CategoryViewSet(
 ):
     queryset = Category.objects.all().order_by('name')
     serializer_class = CategorySerializer
-    permission_classes = (IsAdminOrRead,)
+    permission_classes = (ForGenreAndCategoryAndTitle,)
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -41,7 +42,7 @@ class GenreViewSet(
 ):
     queryset = Genre.objects.all().order_by('name')
     serializer_class = GenreSerializer
-    permission_classes = (IsAdminOrRead,)
+    permission_classes = (ForGenreAndCategoryAndTitle,)
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -52,7 +53,7 @@ class TitleViewSet(viewsets.ModelViewSet):
                 .annotate(rating=Avg("reviews__score")).all()
                 .order_by("name")
                 )
-    permission_classes = (IsAdminOrRead,)
+    permission_classes = (ForGenreAndCategoryAndTitle,)
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category__slug', 'genre__slug', 'name', 'year')
@@ -68,7 +69,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (ForReviewAndComment,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review(self):
@@ -84,7 +85,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (IsAuthorOrReadOnly,)
+    permission_classes = (ForReviewAndComment,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title(self):
@@ -103,10 +104,10 @@ class RegistationApiView(views.APIView):
 
     def post(self, request):
         serializer = RegistrationSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.save()
-            self.send_confirmation_code(user)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        self.send_confirmation_code(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def send_confirmation_code(self, user):
         confirmation_code = default_token_generator.make_token(user)
@@ -124,12 +125,12 @@ class GetTokenApiView(views.APIView):
 
     def post(self, request):
         serializer = GetTokenSerializer(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-            user = serializer.get_registered_user()
-            token = RefreshToken.for_user(user)
-            return Response(
-                {'token': str(token.access_token)}, status=status.HTTP_200_OK
-            )
+        serializer.is_valid(raise_exception=True)
+        user = serializer.get_registered_user()
+        token = RefreshToken.for_user(user)
+        return Response(
+            {'token': str(token.access_token)}, status=status.HTTP_200_OK
+        )
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -139,7 +140,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
-    permission_classes = [ForAdminOrSurepUser]
+    permission_classes = [ForUserProfile]
     http_method_names = ['get', 'post', 'patch', 'delete']
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)
@@ -155,12 +156,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             serializer = UserSerializer(request.user)
         elif request.method == 'PATCH':
-            request_data = request.data.copy()
-            if 'role' in request_data:
-                del request_data['role']
             serializer = UserSerializer(
-                request.user, data=request_data, partial=True
+                request.user, data=request.data, partial=True
             )
-            if serializer.is_valid(raise_exception=True):
-                serializer.save()
+            serializer.fields['role'].read_only = True
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
