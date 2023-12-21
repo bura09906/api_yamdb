@@ -15,8 +15,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from reviews.models import Comment, Review, User
 from titles.models import Category, Genre, Title
 from .filters import TitleFilter
-from .permissions import (ForUserProfile, ForGenreAndCategoryAndTitle,
-                          ForReviewAndComment)
+from .permissions import (IsAuthorOrAdminOrRead, IsAdmin,
+                          IsAuthenticatedAdminOrRead)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, GetTokenSerializer,
                           RegistrationSerializer, ReviewSerializer,
@@ -28,9 +28,9 @@ class CategoryViewSet(
     mixins.ListModelMixin, mixins.CreateModelMixin,
     mixins.DestroyModelMixin, viewsets.GenericViewSet
 ):
-    queryset = Category.objects.all().order_by('name')
+    queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (ForGenreAndCategoryAndTitle,)
+    permission_classes = (IsAuthenticatedAdminOrRead,)
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -40,9 +40,9 @@ class GenreViewSet(
     mixins.ListModelMixin, mixins.CreateModelMixin,
     mixins.DestroyModelMixin, viewsets.GenericViewSet
 ):
-    queryset = Genre.objects.all().order_by('name')
+    queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    permission_classes = (ForGenreAndCategoryAndTitle,)
+    permission_classes = (IsAuthenticatedAdminOrRead,)
     filter_backends = (SearchFilter,)
     search_fields = ('name',)
     lookup_field = 'slug'
@@ -53,7 +53,7 @@ class TitleViewSet(viewsets.ModelViewSet):
                 .annotate(rating=Avg("reviews__score")).all()
                 .order_by("name")
                 )
-    permission_classes = (ForGenreAndCategoryAndTitle,)
+    permission_classes = (IsAuthenticatedAdminOrRead,)
     http_method_names = ['get', 'post', 'patch', 'delete']
     filter_backends = (DjangoFilterBackend,)
     filterset_fields = ('category__slug', 'genre__slug', 'name', 'year')
@@ -69,7 +69,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = (ForReviewAndComment,)
+    permission_classes = (IsAuthorOrAdminOrRead,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_review(self):
@@ -85,7 +85,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = (ForReviewAndComment,)
+    permission_classes = (IsAuthorOrAdminOrRead,)
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_title(self):
@@ -140,7 +140,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     lookup_field = 'username'
-    permission_classes = [ForUserProfile]
+    permission_classes = [IsAdmin]
     http_method_names = ['get', 'post', 'patch', 'delete']
     pagination_class = PageNumberPagination
     filter_backends = (filters.SearchFilter, filters.OrderingFilter)

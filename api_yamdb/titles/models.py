@@ -16,6 +16,7 @@ class BaseGenreCategory(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['name']
 
 
 class Genre(BaseGenreCategory):
