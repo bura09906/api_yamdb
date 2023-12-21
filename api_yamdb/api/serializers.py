@@ -16,9 +16,6 @@ class CategorySerializer(serializers.ModelSerializer):
         model = Category
         fields = ('name', 'slug')
         lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -27,9 +24,6 @@ class GenreSerializer(serializers.ModelSerializer):
         model = Genre
         fields = ('name', 'slug')
         lookup_field = 'slug'
-        extra_kwargs = {
-            'url': {'lookup_field': 'slug'}
-        }
 
 
 class TitleReadSerializer(serializers.ModelSerializer):
@@ -78,10 +72,10 @@ class ReviewSerializer(serializers.ModelSerializer):
     )
 
     def validate(self, data):
-        if self.context["request"].method != "POST":
+        if self.context['request'].method != 'POST':
             return data
-        title_id = self.context["view"].kwargs['title_id']
-        user = self.context["request"].user
+        title_id = self.context['view'].kwargs['title_id']
+        user = self.context['request'].user
         if Review.objects.filter(title_id=title_id,
                                  author=user).exists():
             raise ValidationError(
