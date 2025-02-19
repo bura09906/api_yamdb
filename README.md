@@ -6,6 +6,7 @@
 # Инструкция по развертыванию:
 1. Клонировать репозиторий
 2. Создать и активировать виртуальное окружение:
+
    Команды для Windiws:
    ```
    python -m venv venv
@@ -20,8 +21,8 @@
    ```
    source venv/bin/activate
    ```
-3. Установить зависимости из файла requirements.txt:
+4. Установить зависимости из файла requirements.txt:
    ```
    pip install -r requirements.txt
    ```
-4. Создать файл .env c константами EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+5. Создать файл .env c константами EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
